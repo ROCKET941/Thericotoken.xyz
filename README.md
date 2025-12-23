@@ -41,6 +41,17 @@ open index.html
 
 If you're experiencing DNS issues or the website isn't loading, please see our comprehensive [DNS Setup Guide](DNS-SETUP.md).
 
+## 🚨 Troubleshooting
+
+If you're experiencing 404 errors or security warnings:
+
+1. **Quick Check:** Run the diagnostic script:
+   ```bash
+   ./check-status.sh
+   ```
+
+2. **Detailed Guide:** See the [Troubleshooting Guide](TROUBLESHOOTING.md) for step-by-step diagnostic and fixing instructions.
+
 ### Quick DNS Setup Summary
 
 **At GoDaddy (or your domain registrar):**
