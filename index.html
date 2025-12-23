@@ -12,6 +12,7 @@
       --accent: #f97316;
       --accent-soft: rgba(249,115,22,0.14);
       --text: #ffffff;
+      --text-dark: #000000;
       --muted: #d1d5db;
       --border: #1f2937;
       --solana-1: #9945ff;
@@ -182,7 +183,7 @@
     }
     .btn-primary {
       background: linear-gradient(135deg, var(--solana-1) 0%, var(--solana-2) 100%);
-      color: #000;
+      color: var(--text-dark);
       font-weight: 700;
       box-shadow: 0 10px 40px rgba(20,241,149,0.5), 0 0 20px rgba(153,69,255,0.3);
       border: 2px solid rgba(255,255,255,0.2);
@@ -344,7 +345,7 @@
       padding-left: 20px;
     }
     li + li { margin-top: 6px; }
-    strong { color: #ffffff; font-weight: 700; }
+    strong { color: var(--text); font-weight: 700; }
 
     .how-to-buy {
       margin-top: 40px;
