@@ -71,7 +71,7 @@ This project is open source and available for the community.
 
 ## 🔗 Official Links
 
-- **Website**: https://www.thericotoken.xyz
+- **Website**: https://thericotoken.xyz
 - **Twitter/X**: [@TheRicoToken](https://x.com/TheRicoToken)
 - **Telegram**: [The Rico Token Community](https://t.me/+KZKwAv0n9Zs1ODNh)
 - **Dexscreener**: [RICO Pair](https://dexscreener.com/solana/7u5q6j8j5q9xhxesuwbmcg4fn5ngfry5stxq87nb9mdx)
