@@ -4,9 +4,15 @@
 # This script checks DNS, GitHub Pages, and website status
 #
 
+# Configuration
+DOMAIN="thericotoken.xyz"
+GITHUB_USER="ROCKET941"
+GITHUB_REPO="Thericotoken.xyz"
+GITHUB_PAGES_URL="https://${GITHUB_USER}.github.io/${GITHUB_REPO}/"
+
 echo "========================================="
 echo "Website Status Checker"
-echo "thericotoken.xyz"
+echo "${DOMAIN}"
 echo "========================================="
 echo ""
 
@@ -29,10 +35,10 @@ fi
 
 if [ -f "CNAME" ]; then
     CNAME_CONTENT=$(cat CNAME)
-    if [ "$CNAME_CONTENT" = "thericotoken.xyz" ]; then
+    if [ "$CNAME_CONTENT" = "${DOMAIN}" ]; then
         echo -e "${GREEN}✓${NC} CNAME file correct: $CNAME_CONTENT"
     else
-        echo -e "${YELLOW}⚠${NC} CNAME file contains: $CNAME_CONTENT (expected: thericotoken.xyz)"
+        echo -e "${YELLOW}⚠${NC} CNAME file contains: $CNAME_CONTENT (expected: ${DOMAIN})"
     fi
 else
     echo -e "${RED}✗${NC} CNAME file is MISSING!"
@@ -53,10 +59,10 @@ echo "---"
 # Check if dig or nslookup is available
 if command -v dig &> /dev/null; then
     DNS_TOOL="dig"
-    DNS_RESULT=$(dig +short thericotoken.xyz A)
+    DNS_RESULT=$(dig +short ${DOMAIN} A)
 elif command -v nslookup &> /dev/null; then
     DNS_TOOL="nslookup"
-    DNS_RESULT=$(nslookup thericotoken.xyz 2>/dev/null | grep -A 10 "Name:" | grep "Address:" | awk '{print $2}' | grep -v '#')
+    DNS_RESULT=$(nslookup ${DOMAIN} 2>/dev/null | grep -A 10 "Name:" | grep "Address:" | awk '{print $2}' | grep -v '#')
 else
     echo -e "${YELLOW}⚠${NC} DNS tools (dig/nslookup) not available"
     DNS_RESULT=""
@@ -89,7 +95,7 @@ if [ ! -z "$DNS_RESULT" ]; then
         printf '%s\n' "${GITHUB_IPS[@]}"
     fi
 else
-    echo -e "${RED}✗${NC} Domain thericotoken.xyz does NOT resolve"
+    echo -e "${RED}✗${NC} Domain ${DOMAIN} does NOT resolve"
     echo "ACTION REQUIRED: Configure DNS A records at your domain registrar"
 fi
 
@@ -101,7 +107,7 @@ echo "---"
 
 # Check HTTP
 if command -v curl &> /dev/null; then
-    HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 http://thericotoken.xyz 2>/dev/null || echo "000")
+    HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 http://${DOMAIN} 2>/dev/null || echo "000")
     
     if [ "$HTTP_STATUS" = "000" ]; then
         echo -e "${RED}✗${NC} HTTP: Cannot connect (DNS issue or site down)"
@@ -116,7 +122,7 @@ if command -v curl &> /dev/null; then
     fi
     
     # Check HTTPS
-    HTTPS_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 https://thericotoken.xyz 2>/dev/null || echo "000")
+    HTTPS_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 https://${DOMAIN} 2>/dev/null || echo "000")
     
     if [ "$HTTPS_STATUS" = "000" ]; then
         echo -e "${RED}✗${NC} HTTPS: Cannot connect (DNS issue, SSL problem, or site down)"
@@ -130,7 +136,7 @@ if command -v curl &> /dev/null; then
     
     # Check SSL Certificate
     if command -v openssl &> /dev/null; then
-        SSL_INFO=$(echo | openssl s_client -servername thericotoken.xyz -connect thericotoken.xyz:443 2>/dev/null | openssl x509 -noout -subject -dates 2>/dev/null)
+        SSL_INFO=$(echo | openssl s_client -servername ${DOMAIN} -connect ${DOMAIN}:443 2>/dev/null | openssl x509 -noout -subject -dates 2>/dev/null)
         if [ ! -z "$SSL_INFO" ]; then
             echo -e "${GREEN}✓${NC} SSL Certificate is present"
             EXPIRY=$(echo "$SSL_INFO" | grep "notAfter")
@@ -150,7 +156,7 @@ echo "📦 Checking GitHub Pages Direct URL..."
 echo "---"
 
 if command -v curl &> /dev/null; then
-    GH_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 https://rocket941.github.io/Thericotoken.xyz/ 2>/dev/null || echo "000")
+    GH_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 ${GITHUB_PAGES_URL} 2>/dev/null || echo "000")
     
     if [ "$GH_STATUS" = "200" ]; then
         echo -e "${GREEN}✓${NC} GitHub Pages URL accessible (Status: 200 OK)"
@@ -174,7 +180,7 @@ if [ ! -z "$DNS_RESULT" ] && [ "$HTTPS_STATUS" = "200" ]; then
     echo -e "${GREEN}✓ Website appears to be working correctly!${NC}"
     echo ""
     echo "Your site should be accessible at:"
-    echo "  https://thericotoken.xyz"
+    echo "  https://${DOMAIN}"
 elif [ -z "$DNS_RESULT" ]; then
     echo -e "${RED}⚠ DNS NOT CONFIGURED${NC}"
     echo ""
@@ -192,9 +198,9 @@ elif [ "$HTTPS_STATUS" = "404" ] || [ "$HTTP_STATUS" = "404" ]; then
     echo ""
     echo "ACTION REQUIRED:"
     echo "1. Check GitHub Pages settings:"
-    echo "   https://github.com/ROCKET941/Thericotoken.xyz/settings/pages"
+    echo "   https://github.com/${GITHUB_USER}/${GITHUB_REPO}/settings/pages"
     echo "2. Ensure 'main' branch is selected"
-    echo "3. Ensure custom domain is set to: thericotoken.xyz"
+    echo "3. Ensure custom domain is set to: ${DOMAIN}"
     echo "4. Wait for DNS check to pass"
     echo ""
     echo "See: TROUBLESHOOTING.md for detailed instructions"
